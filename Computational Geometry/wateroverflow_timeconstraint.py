@@ -5,7 +5,7 @@ Need to find if tank will do one of the 3 above.
 
 Approach is :
 
-Volume of cyclindriacal tank is (22/7)*radius*radius*height . Given the flow rate, find the amount of time required
+Volume of cylindrical tank is (22/7)*radius*radius*height . Given the flow rate, find the amount of time required
 to completely fill the tank then compare it with the given time.If given time > required time, wil result in overflwo condition and if the 
 given time is less than required time then uderflow results.Else the tank is filled"""
 

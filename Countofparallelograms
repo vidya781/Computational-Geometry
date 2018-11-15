@@ -1,0 +1,52 @@
+Count of parallelograms in a plane
+
+Given some points on a plane which are distinct and no 3 of them lie omn the same line, we need to find the number of parallelograms 
+with vertices as given points
+
+points[] = {(0,0),(0,2),(2,2),(4,2),(1,4),(3,4)}
+
+Solve this problem by exploiting a property of parallelograms that diagonals intersect each other in the middle.
+If we obtain a middle point which is the middle point of more than one line seg then we can say that a paralleogram exists.
+If a middle point occurs x times then we diagonals can be chosen in xC2 ways. There iwll be x*(x-1)/2 paralleograms corr to this midddle point with frequency x.
+
+So we iterate over all pairs of points and we calculate the middle point and increase freq of middle point by 1. At the end, wee count the number of parallelograms according to the freq of each distinct middle node
+
+#include<bits/stdc++.h>
+using namespace std;
+
+int countofparallelograms(int x[], int y[], int N)
+{
+  // Map to store frequency of mid points
+  map<pair<int,int>, int> cnt;
+  for(int i = 0; i < N; i++)
+  {
+    for(int j = i+1; j < N; j++)
+    {
+       // divisionby 2 ignored to get rid of doubles
+       int midX = x[i] + x[j];
+       int midY = y[i] + y[j];
+    
+       // increase the freq of mid point
+       cnt[make_pair(midX,midY)]++;
+      }
+     }
+
+   // iterating through all mid points
+    int res = 0;
+    for(auto it = cnt.begin(); it != cnt.end(); it++)
+    {
+      int freq = it->second;
+     
+       res += freq*(freq-1)/2   // Increase count of paralleograms by applying function on frequency of mid point
+      }
+    return res;
+  }
+
+int main()
+{
+  int x[] = {0,0,2,4,1,3};
+  int y[] = {0,2,2,2,4,4};
+  int N = sizeof(x)/sizeof(int);
+  cout << countofparallelograms(x,y, N) << endl;
+  return 0;
+}

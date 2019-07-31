@@ -1,5 +1,5 @@
 A program which tests if two rectangles have a nonempty intersection. If the intersection is nonempty, return the rectangle formed by their
-intersection.
+intersection.Adapted from EPI.
 
 The first thing to note is that there are qualitatively different ways in which rectangles can intersect, they have a partial overlap,
 one contains the other, they have a common side, they share a common corner, they form a cross, they form a tee and the case analysis can be quite 

@@ -1,0 +1,102 @@
+Can an algorithm determine if a Point P lies within, on or outside a triangle or ( for that matter an enclosed geometrical structure
+like a polygon? ) 
+
+What would the complexity in such a situation be?
+
+We outline a few approaches :
+
+a) Find the area of the triangle given the coordinates 
+
+def triangle_area(x1, y1, x2, y2, x3, y3):
+    return abs(0.5*(x1*(y2-y3)+x2*(y3-y1)+x3*(y1-y2)))  # We will keep it simple now-- in this case, a triangle with 3 vertices
+
+T = triangle_area(x1,y1,x2,y2,x3,y3)
+# No loops here, except subtractions and multiplications and finally additions
+
+If the point lies in the interior of the triangle then the area of the triangle formed with this point with one of the bases (
+say BC ) will be smaller than the area of the triangle and the sum of the areas of the point with the other 2 sides should be equal
+to the area of the triangle calculated by step (a).
+
+Let B (x2,y2) and C (x3,y3) and P (x0,y0)
+
+def subtriangle_area1(x0,y0,x2,y2,x3,y3):
+    return abs(0.5*(x0*(y2-y3)+x2*(y3-y0)+x3*(y0-y2)))
+
+T1 = subtriangle_area1(x0,y0,x2,y2,x3,y3)
+
+Chief criterion : subtriangle_area < triangle_area 
+
+If subtriangle_area > triangle_area , the point lies outside but this would be an erroneous conclusion.
+
+If the point A were to be reflected using Mirror BC then it would be A' , and the triangle A'BC still has the same area as T(ABC)
+but the point is outside the triangle.
+
+We consider two more cases
+
+def subtriangle_area2(x0,y0,x1,y1,x2,y2):
+    return abs(0.5*(x0*(y1-y2)+x1*(y2-y0)+x2*(y0-y1)))
+T2= subtriangle_area2(x0,y0,x1,y1,x2,y2)
+    
+def subtraingle_area3(x0,y0,x1,y1,x3,y3):
+    return abs(0.5*(x0*(y1-y3)+x1*(y2-y0)+x3*(y0-y1)))
+T3 = subtriangle_area3(x0,y0,x1,y1,x3,y3)
+
+if T1 + T2 + T3 == T:
+    print("Point is inside the triangle")
+else:
+    print("Point is outside the triangle")
+
+The only time consuming factor here seems to be the fact there are lot of multiplications and additions. Is there a simpler way 
+wherein we can find this out in a much more efficient way.
+
+Computing approximate angles:
+
+First compute the slopes:  Slope AB = (y2-y1)/(x2-x1)   ----(1)
+                           Slope BC = (y3-y2)/(x3-x2)   -----(2)
+                           Slope AC = (y3-y1)/(x3-x1)  ------(3)
+                tan B = |Slope BC - Slope AB |/| 1 + Slope BC* Slope AB |
+                tan C = |Slope AC - Slope BC | / | 1 + Slope AC * Slope BC | 
+                
+ def computeangles(x1,y1,x2,y2,x3,y3):
+     # Going by the usual convention that A=(x1,y1), B=(x2,y2),C=(x3,y3)
+     m1 = (y2-y1)/(x2-x1)   # Slope AB
+     m2 = (y3-y2)/(x3-x2)   # Slope BC
+     m3 = (y3-y1)/(x3-x1)   # Slope AC
+     
+     import math
+     tanB = abs(m1-m2)/(1+m1*m2)
+     tanC = abs(m3-m2)/(1+m2*m3)
+     tanA = abs(m1-m3)/(1+m1*m3)
+     
+     B = math.atan(tanB)
+     C = math.atan(tanC)
+     A = math.atan(tanA)
+     
+     # calculate the angle for the point
+     _m1 = (y0-y2)/(x0-x2)  # Slope PB
+     _m2 = (y0-y3)/(x0-x3)  # Slope PC
+     _m3 = (y0-y1)/(x0-x1)  # Slope PA
+     
+     #tanPBC = abs (|Slope PB - Slope BC|/|1 + Slope PB*Slope BC|)
+     #tanPCB = abs (|Slope PC - Slope BC|/|1 + Slope PC*Slope BC|)
+     
+     tanPBC = abs(_m1 - m2)/(1 + _m1*m2)
+     tanPCB = abs(_m2 - m2)/(1 + _m2*m2)
+     tanBPC = abs(_m1 - _m2)/(1 + _m1*_m2)
+           
+     PBC = math.atan(tanPBC)
+     PCB = math.atan(tanPCB)
+     BPC = math.atan(tanBPC)
+     
+     # Since tan is an increasing function from 0 to 90, we can compare the tan values per se
+     
+    if A + B + C + BPC = 360  # assume conversion to angles
+        print(" Point P lies outside the triangle)
+    else:
+        print(" Point P lies on or inside the triangle)
+        
+   From the complexity point of view, it would be worth using the timeit module and compare both approaches for different sets 
+   of points.
+          
+                
+                         

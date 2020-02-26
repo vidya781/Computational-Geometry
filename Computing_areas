@@ -1,0 +1,70 @@
+Given a square oriented along the Coordinate axes in such a way that it is composed of 4 triangles . One representative triangle
+is (0,0) , (1,0) and (0,1). 
+
+Compute the area of the figure so formed , the vertices of the square being (1,0) , (0,1) , (-1,0) and (0,-1). It is clear
+how the triangles are are constituting the square.
+
+Going by the symmetry, suffices to find the area of one triangle and multiply it by 4.
+
+def computearea(x,y):  # we generalise x is the x coordinate and y is the coordinate along the Y axis
+    return 4 * (0.5*x*y)
+    
+In the square's case both the x and y coordinates will be equal.
+
+Now the above piece of code will handle the situation in which x != y as well also. But the multiplication factor of 4
+will hold clearly only if the figure is symmetric about the axes.
+
+Now, let's extend this to simple curves like : Circles
+Consider an equation like x^2 + y^2 = r^2
+
+if r = 1 then we get a unit circle , y^2 = 1 - x^2 , y = sqrt (1 - x^2) Then the integral of the curve is Int (y) dx
+ = Int ( sqrt(1 - x^2)) dx | L1 = 0 to L2 = 1 
+ 
+ We proceed to develop a Python function using matplotlib.
+ 
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+import math
+
+def trapz(f,a,b,N=50):
+    '''Approximate the integral of f(x) from a to b by the trapezoid rule.
+
+    The trapezoid rule approximates the integral \int_a^b f(x) dx by the sum:
+    (dx/2) \sum_{k=1}^N (f(x_k) + f(x_{k-1}))
+    where x_k = a + k*dx and dx = (b - a)/N.
+
+    Parameters
+    ----------
+    f : function
+        Vectorized function of a single variable
+    a , b : numbers
+        Interval of integration [a,b]
+    N : integer
+        Number of subintervals of [a,b]
+
+    Returns
+    -------
+    float
+        Approximation of the integral of f(x) from a to b using the
+        trapezoid rule with N subintervals of equal length.
+
+    Examples
+    --------
+    >>> trapz(np.sin,0,np.pi/2,1000)
+    0.9999997943832332
+    '''
+    x = np.linspace(a,b,N+1) # N+1 points make N subintervals
+    y = f(x)
+    y_right = y[1:] # right endpoints
+    y_left = y[:-1] # left endpoints
+    dx = (b - a)/N
+    T = (dx/2) * np.sum(y_right + y_left)
+    return T
+  
+  trapz(lambda x : (1 - x**2)**(0.5),0,1,10000)
+  
+  Now all we need to do is multiply the result by 4 in case of a symmetric figure like a circle.
+  
+  In case of an ellipse , the situation would be different the equation of the curve will change given the major and minor 
+  axes.
